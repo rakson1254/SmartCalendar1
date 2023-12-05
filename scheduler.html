@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <div id="calendarBox">
+        <div id="calendar"></div>
+        <button id="addEventButton" style="font-weight:350">일정 추가</button>
+        <a href="#" type="button" class="back_to_login"style="position: relative; top: 14px;" onclick="go_to_interface()">사용자 인터페이스로 돌아가기</a>
+    </div>
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="addEventForm">
+                <label for="title">제목:</label>
+                <input type="text" id="title" name="title"><br><br>
+
+                <label for="category">카테고리:</label>
+                <select id="category" name="category">
+                    <option value="직장">직장</option>
+                    <option value="학업">학업</option>
+                    <option value="취미">취미</option>
+                    <option value="기타">기타</option>
+                </select><br><br>
+
+                <label for="description">내용:</label>
+                <textarea id="description" name="description"></textarea><br><br>
+
+                <label for="startDate">시작 날짜 및 시간:</label>
+                <input type="datetime-local" id="startDate" name="startDate" step="1"><br><br>
+
+                <label for="endDate">종료 날짜 및 시간:</label>
+                <input type="datetime-local" id="endDate" name="endDate" step="1"><br><br>
+
+
+                <label for="priority">우선순위:</label>
+                <select id="priority" name="priority">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select><br><br>
+
+                <input type="submit" value="이벤트 추가">
+            </form>
+        </div>
+    </div>
+    <div id="editEventModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="editEventForm">
+                <label for="editTitle">제목:</label>
+                <input type="text" id="editTitle" name="editTitle"><br><br>
+
+                <label for="editCategory">카테고리:</label>
+                <select id="editCategory" name="editCategory">
+                    <option value="직장">직장</option>
+                    <option value="학업">학업</option>
+                    <option value="취미">취미</option>
+                    <option value="기타">기타</option>
+                </select><br><br>
+
+                <label for="editDescription">내용:</label>
+                <textarea id="editDescription" name="editDescription"></textarea><br><br>
+
+                <label for="editStartDate">시작 날짜 및 시간:</label>
+                <input type="datetime-local" id="editStartDate" name="editStartDate" step="1"><br><br>
+
+                <label for="editEndDate">종료 날짜 및 시간:</label>
+                <input type="datetime-local" id="editEndDate" name="editEndDate" step="1"><br><br>
+
+                <label for="editPriority">우선순위:</label>
+                <select id="editPriority" name="editPriority">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select><br><br>
+
+                <input type="button" value="일정 업데이트" onclick="editPlan()">
+                <input type="button" value="일정 삭제" onclick="deletePlan()">
+            </form>
+        </div>
+    </div>
+    <meta charset="utf-8" />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Smart Calendar</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.7.0/main.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/fullcalendar@5.7.0/main.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <script src="smartcalendar.js">
+        // 일정 추가 폼 제출 핸들러 및 유효성 검사
+        document.getElementById('addEventForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var title = document.getElementById('title').value.trim();
+            var description = document.getElementById('description').value.trim();
+            var start = document.getElementById('startDate').value;
+            var end = document.getElementById('endDate').value;
+
+            console.log("제목: ", title);
+            console.log("설명: ", description);
+            console.log("시작 날짜: ", start);
+            console.log("종료 날짜: ", end);
+
+            if (title === "" || description === "") {
+                alert("제목과 내용은 반드시 입력해야 합니다.");
+                return;
+            }
+
+            if (start === "" || end === "") {
+                alert("시작 시간과 종료 시간은 반드시 입력해야 합니다.");
+                return;
+            }
+
+            if (new Date(start) >= new Date(end)) {
+                alert("종료 시간은 시작 시간보다 늦어야 합니다.");
+                return;
+            }
+
+            var eventData = {
+                title: title,
+                category: document.getElementById('category').value,
+                description: description,
+                start: start,
+                end: end,
+                priority: document.getElementById('priority').value,
+                eventid: ++event_max_id,
+                userid: userId
+            };
+            createPlan(eventData);
+
+            document.getElementById("eventModal").style.display = "none";
+            document.getElementById('addEventForm').reset();
+
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Smart Calendar</title>
+</head>
+
+<body>
+    <div class="container" style="width: 700px; text-align: center;">
+        <h2>성취도 현황</h2>
+        <div class="graphWrap">
+            <canvas id="chart" width="600" height="400"></canvas>
+        </div>
+        <a href="#" type="button" class="back_to_login" style="position: relative; top: 10px;"onclick="go_to_interface()">성취도 확인으로 돌아가기</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        var LoginUserData = localStorage.getItem("logined_user");
+        var userId = (LoginUserData && JSON.parse(LoginUserData).user_id) || 'defaultId';
+        // 페이지 로드 시 호출
+        window.onload = function () {
+            displayUsernameInEvaluation();
+        };
+
+          data = calculateWeeklyRatios();
+          ctx = document.getElementById('chart');
+
+        console.log(data);
+        console.log(getNowWeekly())
+
+        let labels = [];
+        let datas = [];
+
+        let count = 1;
+        for (let i in data) {
+            labels.push((count) + "주차");
+            datas.push(data[i] * 100); // Multiply ratio by 100
+            count += 1;
+        }
+
+        console.log(labels)
+        console.log(datas)
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '성취율',
+                    data: datas,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: false,
+                scales: {
+                    y: {
+                        suggestedMin: 0,
+                        suggestedMax: 100, // Set the maximum value of the y-axis to 100
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        //login페이지를 실행시키는 함수
+        function go_to_interface() {
+            window.location.href = 'achievement.html';
+        }
+
+        // 주간 성취율 가져오기
+        function calculateWeeklyRatios() {
+            // Read data from localStorage
+             storedData = localStorage.getItem(`acdata_${userId}`);
+
+            try {
+                // Parse the stored data into an object
+                  dataObject = JSON.parse(storedData);
+
+                // Convert the object into an array of objects
+                  dataArray = Object.entries(dataObject).map(([date, value]) => ({
+                    date: new Date(date),
+                    value: Number(value)
+                }));
+
+                // Sort the array by date
+                dataArray.sort((a, b) => a.date - b.date);
+
+                // Initialize an object to store weekly ratios
+                  weeklyRatios = {};
+
+                // Loop through each week of the year
+                for (let i = 1; i <= 52; i++) {
+                    // Calculate the start and end dates for the current week
+                      startDate = new Date(`2023-01-01`);
+                    startDate.setDate(startDate.getDate() + (i - 1) * 7);
+
+                      endDate = new Date(startDate);
+                    endDate.setDate(endDate.getDate() + 6);
+
+                    // Filter data for the current week
+                      weekData = dataArray.filter(entry =>
+                        entry.date >= startDate && entry.date <= endDate
+                    );
+
+                    // Calculate the ratio for the current week
+                      onesCount = weekData.filter(entry => entry.value === 1).length;
+                      zerosCount = weekData.filter(entry => entry.value === 0).length;
+
+                    let ratio;
+                    if (onesCount + zerosCount === 0) {
+                        ratio = NaN;
+                    } else {
+                        ratio = onesCount / (onesCount + zerosCount);
+                    }
+
+                    // Store the ratio in the weeklyRatios object
+                    weeklyRatios[`ratio_${i}`] = ratio;
+                }
+
+                return weeklyRatios;
+
+            } catch (error) {
+                console.error('Error: Unable to parse data from localStorage.', error);
+                return null;
+            }
+        }
+
+        // 현재 주차수 구하기
+        function getNowWeekly() {
+
+            let currentDate = new Date();
+            let startDate = new Date(currentDate.getFullYear(), 0, 1);
+            var days = Math.floor((currentDate - startDate) /
+                (24 * 60 * 60 * 1000));
+
+            var weekNumber = Math.ceil(days / 7);
+
+            return weekNumber;
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,467 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.interface {
+    background-color: #fff;
+    border-radius: 50px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 600px;
+    text-align: center;
+    padding: 30px;
+}
+
+h1 {
+    color: #333;
+    font-size:xx-large;
+}
+
+.container {
+    background-color: #fff;
+    border-radius: 50px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 350px;
+    text-align: center;
+    padding: 20px;
+}
+
+h2 {
+    color: #333;
+    font-size:x-large;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    width: 100%;
+    background-color: skyblue;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    margin: 4px;
+    font-weight: 320;
+
+}
+
+button:hover {
+    background-color: skyblue;
+}
+
+.login{
+    width: 100%;
+    background-color: skyblue;
+    color: #fff;
+    padding: 10px;
+    margin: 4px 0;
+    border-radius: 13px;
+    cursor: pointer;
+}
+
+.login:hover{
+    background-color: rgb(91, 167, 197);
+}
+
+.back_to_login{
+    margin-top: 5px;
+    color: #333;
+    display: inline-block;
+    float: right;
+    font-size:small;
+    padding: 10px;
+    text-decoration: underline;
+    position:relative;
+    top:130px;
+}
+
+.signup {
+    width: 100%;
+    background-color: #4a90e2;
+    color: #fff;
+    padding: 10px;
+    margin: 4px 0;
+    border-radius: 13px;
+    cursor: pointer;
+}
+
+.todays_task{
+    width: 80%;
+    background-color: skyblue;
+    color: #fff;
+    padding: 17px;
+    margin: 5px 0;
+    border-radius: 20px;
+    cursor: pointer;
+}
+.todays_task:hover{
+    background-color: rgb(91, 167, 197);
+}
+
+.scheduler{
+    width: 80%;
+    background-color: skyblue;
+    color: #fff;
+    padding: 17px;
+    margin: 5px 0;
+    border-radius: 20px;
+    cursor: pointer;
+}
+.scheduler:hover{
+    background-color: rgb(91, 167, 197);
+}
+
+.evaluation{
+    width: 80%;
+    background-color: skyblue;
+    color: #fff;
+    padding: 17px;
+    margin: 5px 0;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.evaluation:hover{
+    background-color: rgb(91, 167, 197);
+}
+
+#calendarBox {
+    width: 50%;
+    margin: 0 auto;
+}
+
+#addEventButton {
+    position:relative;
+    top:50%;
+    width: 100%;
+    background-color: skyblue;
+    color: #fff;
+    padding: 10px;
+    margin: 4px 0;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 400;
+    font-size : small;
+}
+
+#addEventButton:hover {
+    background-color: rgb(91, 167, 197);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 20%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#usernameTitle {
+    font-weight:bold;
+}
+
+/* today */
+
+#container {
+    background-color: #fff;
+    border-radius: 50px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 400px;
+    height:370px;
+    
+    text-align: center;
+    padding: 20px;
+}
+
+#todaylist {
+    font-size: 30px;
+    font-weight: bolder;
+    margin-bottom: 20px;
+    margin-top: -120px; /* Adjust this value to move it to the top */
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 20%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+#addEventButton {
+    position:relative;
+    top:50%;
+    width: 100%;
+    background-color: skyblue;
+    color: #fff;
+    padding: 10px;
+    margin: 4px 0;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 400;
+    font-size : small;
+}
+
+#addEventButton:hover{
+    background-color: rgb(91, 167, 197);
+}
+
+
+
+#dateModal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.date-modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 40%; /* Adjust width as needed */
+    max-width:400px;
+    max-height:400px;
+}
+
+.date-modal-label {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+.date-modal-input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+}
+
+
+
+.additional-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    font-weight: 350;
+    font-size: 300;
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.additional-button:hover {
+    background-color: #357ae8;
+}
+
+.graphWrap {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+}
+
+.clear-achievement-data-button {
+    background-color: #787878;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px; /* Adjust the top margin */
+    margin-right: 10px; /* Adjust the right margin */
+    position:relative;
+    top:-51px;
+}
+
+.clear-achievement-data-button:hover {
+    background-color: #4a4a4a; /* Darker green on hover */
+}
+
+#eventDisplay {
+    width: 100%;
+    max-height: 200px; /* Adjust this value as needed */
+    background-color: #ffffff;
+    color: #000;
+    padding: 3px;
+    margin: 10px 0 4px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: small;
+    position: relative;
+    top: 120px;
+    
+    text-align: left; /* Align text to the left */
+    overflow-y: auto; /* Add vertical scroll bar if content overflows */
+}
+.event-container {
+    border: 1px solid #ccc;
+    background-color: #f8f8f8;
+    padding: 1px;
+    margin: 1px 0;
+    border-radius: 8px;
+
+}
+
+#acheivement {
+    width: 100%;
+    background-color: skyblue;
+    color: #fff;
+    padding: 10px;
+    margin: -20px 0 40px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: 350;
+    font-size : small;
+    position:relative;
+    top:150px;
+}
+
+#acheivement:hover{
+    background-color: rgb(91, 167, 197);
+}
+
+.button-style1{
+    font-weight: 350;
+    font-size: 20px; /* Adjust the font size as needed */
+    /* Add any other styles you want here */
+    margin-bottom: 25px;
+}
+.button-style1:hover{
+    background-color: rgb(91, 167, 197);
+}
+.button-style2 {
+    font-weight: 350;
+    font-size: 20px; /* Adjust the font size as needed */
+    /* Add any other styles you want here */
+}
+
+.button-style2:hover{
+    background-color: rgb(91, 167, 197);
+}
+
+.add1{
+    background-color: rgb(61, 70, 238);
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 350;
+    font-size: 300;
+    position:relative;
+    top:-47px;
+
+}
+.add1:hover{
+    background-color: blue;
+}
+
+.add2{
+
+    background-color: rgb(224, 65, 65);
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 350;
+    font-size: 300;
+    position:relative;
+    top:-46px;
+
+}
+
+.add2:hover{
+background-color: red;
+}
+
+.date-modal-button {
+    background-color:skyblue
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 350;
+    font-size: 300;
+    position:relative;
+    top:145px;
+}
+
+.date-modal-button:hover {
+    background-color: #4285f4;
+}

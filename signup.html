@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Calendar - 회원가입</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Smart Calendar 회원가입</h2>
+    <form id="signup_form">
+        <input type="text" id="user_id" placeholder="아이디" required>
+        <input type="password" id="password" placeholder="비밀번호" required>
+        <input type="text" id="username" placeholder="이름" required>
+        <button type="button" class="signup" onclick="person()">회원가입</button>
+    </form>
+    <a href="#" type="button" class="back_to_login" style="position: relative; top: 10px;"onclick="go_to_login()">로그인 페이지로 돌아가기</a>
+</div>
+
+<script src="smartcalendar.js"></script>
+</body>
+</html>

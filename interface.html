@@ -1,0 +1,144 @@
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>calendar</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <!-- jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- bootstrap 4 -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <!-- fullcalendar -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.7.0/main.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/fullcalendar@5.7.0/main.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="interface">
+        <h1 id="usernameTitle"><strong></strong></h1>
+        <h3></h3>
+        <form>
+            <div class="text">
+                <p id="recommend"></p>
+                <button type="button" class="todays_task" onclick="go_to_todays_task()"><strong>오늘의 할일</strong></button>
+                <button type="button" class="scheduler" onclick="go_to_scheduler()"><strong>일정 관리</strong></button>
+                <button type="button" class="evaluation" onclick="go_to_evaluation()"><strong>성취도 확인</strong></button>
+        </form>
+        <a href="#" type="button" class="back_to_login" style="position: relative; top: 10px;"onclick="logout()">로그아웃 및 로그인 페이지로 돌아가기</a>
+    </div>
+    <script src="smartcalendar.js"></script>
+    <script>
+        // 페이지 로드 시 호출
+        window.onload = function () {
+            displayUsername();
+        };
+    </script>
+    <script>
+
+        let data = calculateWeeklyRatios();
+
+        let nowWeek = getNowWeekly();
+
+        let labels = [];
+        let datas = [];
+
+        let count = 1;
+        for (let i in data) {
+            labels.push((count) + "주차");
+            datas.push(data[i])
+            count += 1;
+        }
+
+        let comment = "이번주 성취율 : " + (datas[nowWeek - 1]*100).toFixed(1) + "%, ";
+        console.log("data:",datas);
+        if (datas[nowWeek - 1] >= 1) comment += "너무 완벽합니다! 이대로 쭉!";
+        else if (datas[nowWeek - 1] >= 0.75) comment += "달성률이 좋습니다! 조금만 더 집중해봅시다!";
+        else if (datas[nowWeek - 1] >= 0.5) comment += "우선순위가 낮은 것들에 집중!";
+        else if (datas[nowWeek - 1] >0) comment += "선택과 집중을 할 때입니다!";
+        else if(isNaN(datas[nowWeek-1])){
+            comment ="지난 일정의 [성취도] 기록을 하지 않았습니다."
+        }
+        else{
+            comment += "어서 움직이세요! 아무것도 하고있지 않습니다!";
+            console.log("Value of datas[nowWeek]:", datas[nowWeek]);
+        }
+
+        document.getElementById("recommend").innerHTML = comment;
+
+        // 주간 성취율 가져오기
+        function calculateWeeklyRatios() {
+            // Read data from localStorage
+            const storedData = localStorage.getItem(`acdata_${userId}`);
+
+            try {
+                // Parse the stored data into an object
+                const dataObject = JSON.parse(storedData);
+
+                // Convert the object into an array of objects
+                const dataArray = Object.entries(dataObject).map(([date, value]) => ({
+                    date: new Date(date),
+                    value: Number(value)
+                }));
+
+                // Sort the array by date
+                dataArray.sort((a, b) => a.date - b.date);
+
+                // Initialize an object to store weekly ratios
+                const weeklyRatios = {};
+
+                // Loop through each week of the year
+                for (let i = 1; i <= 52; i++) {
+                    // Calculate the start and end dates for the current week
+                    const startDate = new Date(`2023-01-01`);
+                    startDate.setDate(startDate.getDate() + (i - 1) * 7);
+
+                    const endDate = new Date(startDate);
+                    endDate.setDate(endDate.getDate() + 6);
+
+                    // Filter data for the current week
+                    const weekData = dataArray.filter(entry =>
+                        entry.date >= startDate && entry.date <= endDate
+                    );
+
+                    // Calculate the ratio for the current week
+                    const onesCount = weekData.filter(entry => entry.value === 1).length;
+                    const zerosCount = weekData.filter(entry => entry.value === 0).length;
+
+                    let ratio;
+                    if (onesCount + zerosCount === 0) {
+                        ratio = NaN;
+                    } else {
+                        ratio = onesCount / (onesCount + zerosCount);
+                    }
+
+                    // Store the ratio in the weeklyRatios object
+                    weeklyRatios[`ratio_${i}`] = ratio;
+                }
+
+                return weeklyRatios;
+
+            } catch (error) {
+                console.error('Error: Unable to parse data from localStorage.', error);
+                return null;
+            }
+        }
+
+        // 현재 주차수 구하기
+        function getNowWeekly() {
+
+            let currentDate = new Date();
+            let startDate = new Date(currentDate.getFullYear(), 0, 1);
+            var days = Math.floor((currentDate - startDate) /
+                (24 * 60 * 60 * 1000));
+
+            var weekNumber = Math.ceil(days / 7);
+
+            return weekNumber;
+        }
+    </script>
+</body>

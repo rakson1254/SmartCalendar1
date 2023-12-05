@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <title>Your Title Here</title>
+</head>
+<body>
+    <div id="container">
+        <h1>성취도 확인</h1>
+        <button onclick="redirectToWeekly()" class="button-style1">주간 평가</button>
+        <button onclick="redirectToMonthly()" class="button-style2">월간 평가</button>
+        <a href="#" type="button" class="back_to_login" style="position: relative; top: 100px;"onclick="go_to_interface()">사용자 인터페이스로 돌아가기</a>
+    </div>
+
+
+<script>
+    function redirectToWeekly() {
+        window.location.href = 'weeklyachievement.html';
+    }
+
+    function redirectToMonthly() {
+        window.location.href = 'evaluation.html';
+    }
+
+    function go_to_interface() {
+            window.location.href = 'interface.html';
+        }
+</script>
+
+</body>
+</html>

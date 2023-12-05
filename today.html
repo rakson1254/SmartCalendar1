@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Smart Calendar</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.7.0/main.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/fullcalendar@5.7.0/main.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <title>Display Events</title>
+
+</head>
+
+<body>
+    <div id="container">
+        <h1 id="todaylist" style="position:relative;top:35%;">오늘의 할일</h1>
+        <div id="eventDisplay" class="event-list">
+            <!-- 결과를 표시할 div -->
+            <!-- 여기에 오늘의 할일 리스트 표시 -->
+        </div>
+        <button id="acheivement" >성취도 기록</button>
+        <a href="#" type="button" class="back_to_login" style="position: relative; top: 120px;"onclick="go_to_interface()">사용자 인터페이스로 돌아가기</a>
+    </div>
+    
+
+
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+        </div>
+        <label for="startDate_achi">시작 날짜:</label>
+        <input type="date_achi" id="achievementStartDate" name="startDate_achi"><br><br>
+
+        <label for="endDate_achi">종료 날짜:</label>
+        <input type="date_achi" id="achievementEndDate" name="endDate_achi"><br><br>
+        <button id="clearAchievementData" style="font-size:large;">Clear Achievement Data</button>
+    </div>
+    </div>
+
+    <script type="text/javascript">
+        // Local Storage 키
+        var localStorageKey = "calendarEvents";
+        var event_max_id = 0;
+        var calendar;
+        var LoginUserData = localStorage.getItem("logined_user");
+        var userId = (LoginUserData && JSON.parse(LoginUserData).user_id) || 'defaultId';
+
+
+        var achidata = JSON.parse(localStorage.getItem(`acdata_${userId}`)) || {};
+
+
+        function updateStatusDisplay(status) {
+            var statusDisplay = document.getElementById("statusDisplay");
+            statusDisplay.innerHTML = "Current Status: " + status;
+        }
+        function go_to_interface() {
+            window.location.href = 'interface.html';
+        }
+        // Function to remove acdata from LocalStorage
+        document.addEventListener('DOMContentLoaded', function () {
+            for (var d = new Date('2023-01-01'); d <= new Date('2023-12-31'); d.setDate(d.getDate() + 1)) {
+                var dateString = d.toISOString().slice(0, 10);
+                if (!achidata.hasOwnProperty(dateString)) {
+                    achidata[dateString] = -1;
+                }
+            }
+
+            // Save initialized achidata to local storage
+            localStorage.setItem(`acdata_${userId}`, JSON.stringify(achidata));
+            console.log("DOM Content Loaded");
+            var calendarEl = document.getElementById('calendar');
+            var achievementBtn = document.getElementById("acheivement");
+            function saveDataToLocalStorage() {
+                localStorage.setItem(`acdata_${userId}`, JSON.stringify(achidata));
+            }
+            function someFunction() {
+                // Access data here
+                console.log(achidata);
+            }
+            function updateData() {
+                // Modify data object
+                achidata.someKey = 'someValue';
+                // Save the updated data to localStorage
+                saveDataToLocalStorage();
+            }
+
+            achievementBtn.onclick = function () {
+                console.log("Achievement Button Clicked!");
+                var achievementStartDate = document.getElementById('achievementStartDate').value;
+                var achievementEndDate = document.getElementById('achievementEndDate').value;
+             
+                // Create modal container
+                var dateModal = document.createElement("div");
+                dateModal.id = "dateModal";
+
+                // Create modal content
+                var modalContent = document.createElement("div");
+                modalContent.className = "date-modal-content";
+
+                // Create 시작 시간 label and input
+                var startLabel = document.createElement("label");
+                startLabel.className = "date-modal-label";
+                startLabel.innerText = "시작 시간:";
+
+                var startDateInput = document.createElement("input");
+                startDateInput.className = "date-modal-input";
+                startDateInput.setAttribute("type", "datetime-local");
+                startDateInput.setAttribute("id", "startDate_achi");
+                startDateInput.setAttribute("name", "startDate_achi");
+                startDateInput.setAttribute("step", "1");
+
+                // Create 종료 시간 label and input
+                var endLabel = document.createElement("label");
+                endLabel.className = "date-modal-label";
+                endLabel.innerText = "종료 시간:";
+
+                var endDateInput = document.createElement("input");
+                endDateInput.className = "date-modal-input";
+                endDateInput.setAttribute("type", "datetime-local");
+                endDateInput.setAttribute("id", "endDate_achi");
+                endDateInput.setAttribute("name", "");
+                endDateInput.setAttribute("step", "1");
+
+                
+
+
+
+                // Create submit button
+                var submitButton = document.createElement("button");
+                submitButton.className = "date-modal-button";
+                submitButton.innerText = "확인";
+                
+                // Append elements to modal content
+                modalContent.appendChild(startLabel);
+                modalContent.appendChild(startDateInput);
+                modalContent.appendChild(document.createElement("br")); // Line break for spacing
+                modalContent.appendChild(endLabel);
+                modalContent.appendChild(endDateInput);
+                modalContent.appendChild(document.createElement("br")); // Line break for spacing
+                modalContent.appendChild(submitButton);
+                
+                // Append modal content to modal container
+                dateModal.appendChild(modalContent);
+                
+                // Append modal container to the body
+                document.body.appendChild(dateModal);
+                
+                // Display the modal
+                dateModal.style.display = "block";
+                
+                var additionalButtonsContainer = document.createElement("div");
+                
+                
+                // Create additional buttons
+                var additionalButton1 = document.createElement("button");
+                additionalButton1.innerText = "완성";
+                additionalButton1.className = "add1";
+                document.body.appendChild(additionalButton1);
+
+                additionalButton1.onclick = function () {
+                    
+                    
+
+                    // Handle the click event for Additional Button 1
+                    console.log("Additional Button 1 clicked");
+                    var startDate = new Date(startDateInput.value);
+                    startDate.setHours(0, 0, 0, 0);
+                    var endDate = new Date(endDateInput.value);
+                    endDate.setHours(0, 0, 0, 0);
+                 if(startDate>endDate){
+                    alert("종료 시간은 시작 시간보다 빨라야 됩니다.");
+                    return;
+                 }
+
+                    // Iterate through each date and update data object
+                    var currentDate = new Date(startDate);
+                    while (currentDate <= endDate) {
+                        var year = currentDate.getFullYear();
+                        var month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+                        var day = currentDate.getDate().toString().padStart(2, '0');
+                        var currentDateString = `${year}-${month}-${day}`;
+
+                        achidata[currentDateString] = 1;
+
+                        // Move to the next date
+                        currentDate.setDate(currentDate.getDate() + 1);
+                    }
+                    saveDataToLocalStorage();
+
+                    console.log("Additional Button 1 clicked");
+                    // Log or display all data
+
+                    console.log("All data:", achidata);
+                    if (!startDateInput.value || !endDateInput.value) {
+                        alert("날짜를 선택하세요"); // Display an alert if dates are not selected
+                        return;
+                    } else {
+                        alert("추가 완료!");
+                    }
+                };
+
+                var additionalButton2 = document.createElement("button");
+                additionalButton2.innerText = "미완성";
+                additionalButton2.className = "add2";
+                document.body.appendChild(additionalButton1);
+                additionalButton2.onclick = function () {
+                    // Handle the click event for Additional Button 2
+                    console.log("Additional Button 2 clicked");
+                    var startDate = new Date(startDateInput.value);
+                    startDate.setHours(0, 0, 0, 0);
+                    var endDate = new Date(endDateInput.value);
+                    endDate.setHours(0, 0, 0, 0);
+
+                    if(startDate>endDate){
+                    alert("종료 시간은 시작 시간보다 빨라야 됩니다.");
+                    return;
+                 }
+
+                    // Iterate through each date and update data object
+                    var currentDate = new Date(startDate);
+                    while (currentDate <= endDate) {
+                        var year = currentDate.getFullYear();
+                        var month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+                        var day = currentDate.getDate().toString().padStart(2, '0');
+                        var currentDateString = `${year}-${month}-${day}`;
+
+                        achidata[currentDateString] = 0;
+
+                        // Move to the next date
+                        currentDate.setDate(currentDate.getDate() + 1);
+                    }
+                    saveDataToLocalStorage();
+
+                    console.log("Additional Button 1 clicked");
+                    // Log or display all data
+
+                    console.log("All data:", achidata);
+
+                    if (!startDateInput.value || !endDateInput.value) {
+                        alert("날짜를 선택하세요"); // Display an alert if dates are not selected
+                        return;
+                    } else {
+                        alert("추가 완료!");
+                    }
+                };
+
+                // Append additional buttons to the container
+                additionalButtonsContainer.appendChild(additionalButton1);
+                additionalButtonsContainer.appendChild(additionalButton2);
+
+                // Append the container to the modal content
+                modalContent.appendChild(additionalButtonsContainer);
+
+                // Set up event listener for the submit button
+                submitButton.onclick = function () {
+                    dateModal.style.display = "none";
+                };
+                var clearAchievementDataButton = document.createElement("button");
+    clearAchievementDataButton.innerText = "성취도 기록 초기화";
+    clearAchievementDataButton.className = "clear-achievement-data-button";
+
+    // Event listener for the new button
+    clearAchievementDataButton.onclick = function () {
+        if (confirm("초기화 하겠습니까?")) {
+            clearAchievementData();
+            alert("초기화 완료!");
+        }
+    };
+    additionalButtonsContainer.appendChild(clearAchievementDataButton);
+            }
+
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                timeZone: 'Asia/Seoul',
+                headerToolbar: {
+                    left: 'prev,next',
+                    center: 'title',
+                    right: 'dayGridMonth,dayGridWeek,timeGridDay'
+                },
+                initialView: 'dayGridMonth',
+
+                eventClick: function (info) {
+                    if (confirm("'" + info.event.title + "' 일정을 수정하시겠습니까 ?")) {
+                        openEditEventModal(info);
+                    }
+                }
+            });
+
+            var events = loadPlansFromLocalStorage();
+            updateMaxId(events);
+            calendar.render();
+        });
+
+        // Local Storage에서 데이터 불러오기
+        function loadPlansFromLocalStorage() {
+            var events = JSON.parse(localStorage.getItem(localStorageKey)) || [];
+            displayPlansOnCalendar(events);
+
+            return events;
+        }
+
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+// 동적으로 오늘의 할일 리스트 크기 조절
+const eventDisplay = document.getElementById('eventDisplay');
+const container = document.getElementById('container');
+var userId = (LoginUserData && JSON.parse(LoginUserData).user_id) || 'defaultId';
+
+const maxListHeight = 300; // 최대 높이 지정
+
+// 오늘의 할일 리스트의 높이가 최대 높이를 넘으면 스크롤 표시
+if (eventDisplay.scrollHeight > maxListHeight) {
+    eventDisplay.style.height = maxListHeight + 'px';
+    eventDisplay.style.overflowY = 'auto';
+
+    // container의 높이를 eventDisplay에 맞게 동적으로 조절
+    container.style.height = (eventDisplay.scrollHeight + 100) + 'px'; // 100은 여분으로 더해주는 여백
+}
+
+// Local Storage에서 데이터 가져오기
+const eventsData = JSON.parse(localStorage.getItem('calendarEvents'));
+
+// 현재 날짜 가져오기
+const today = new Date();
+today.setHours(0, 0, 0, 0); // 시간을 00:00:00.000으로 설정
+
+// 오늘 날짜에 해당하는 이벤트 찾기
+const todayEvents = eventsData
+    .filter(event => {
+        const startDate = new Date(event.start);
+        const endDate = new Date(event.end);
+
+        // 시작일과 종료일의 시간을 0시 0분으로 설정
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(0, 0, 0, 0);
+
+        return startDate <= today && today <= endDate;
+    })
+    .filter(event => event.userid === userId)
+    .sort((a, b) => a.priority - b.priority); // Sort by priority from low to high
+
+// 찾은 이벤트를 화면에 표시
+const displayContainer = document.getElementById('eventDisplay');
+
+if (todayEvents.length > 0) {
+    todayEvents.forEach(event => {
+        const eventContainer = document.createElement('div');
+        eventContainer.className = 'event-container'; // Add the class to the container
+
+        const titleParagraph = document.createElement('p');
+        const priorityParagraph = document.createElement('p');
+
+        titleParagraph.innerHTML = `<strong>${event.title}</strong>`;
+        priorityParagraph.innerText = `우선순위: ${event.priority}`;
+
+        eventContainer.appendChild(titleParagraph);
+        eventContainer.appendChild(priorityParagraph);
+
+        eventContainer.style.display = 'flex';
+        eventContainer.style.justifyContent = 'space-between';
+
+        displayContainer.appendChild(eventContainer);
+    });
+} else {
+    displayContainer.innerHTML = '<p>오늘은 이벤트가 없습니다.</p>';
+}
+
+// 사용자 아이디를 URL에서 추출하고 변수에 저장
+var userId = getQueryVariable("user_id");
+
+// userId 사용 예시
+document.addEventListener('DOMContentLoaded', function () {
+    if (userId) {
+        // 여기에 userId를 사용하는 코드를 추가
+        console.log("Logged in User ID (Schedler):", userId);
+    } else {
+        console.log("No User ID found in URL");
+    }
+});
+//login페이지를 실행시키는 함수
+function go_to_interface() {
+    window.location.href = 'interface.html';
+}
+});
+
+function clearAchievementData() {
+    achidata = {};
+    localStorage.setItem(`acdata_${userId}`, JSON.stringify(achidata));
+}
+        // 수정된 이벤트를 LocalStorage에 업데이트
+        function editPlanInLocalStorage(eventId, eventData) {
+            var events = loadPlansFromLocalStorage();
+
+            // 이벤트 ID를 사용하여 해당 이벤트 찾기
+            var updatedEvents = events.map(function (event) {
+                if (event.eventid == eventId) {
+                    return {
+                        title: eventData.title,
+                        category: eventData.category,
+                        description: eventData.description,
+                        start: eventData.start,
+                        end: eventData.end,
+                        priority: eventData.priority,
+                        eventid: eventId,
+                        userid: userId
+                    };
+                } else {
+                    return event;
+                }
+            });
+
+            localStorage.setItem(localStorageKey, JSON.stringify(updatedEvents));
+            events = loadPlansFromLocalStorage();
+        }
+
+
+
+    </script>
+
+
+</body>
+
+</html>
